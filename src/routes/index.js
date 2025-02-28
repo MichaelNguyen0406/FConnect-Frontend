@@ -2,14 +2,19 @@
 import Authentication from "../pages/Authentication";
 import Dashboard from "../pages/Dashboard";
 import User from "../pages/User";
+import Home from "../pages/Home";
+import Chat from "../pages/Chat";
 
 // Layout
 
 export const routes = [
   {
+    path: "/",
+    component: Home,
+  },
+  {
     path: "/dashboard",
     component: Dashboard,
-    protected: true,
   },
   {
     path: "/authentication",
@@ -19,6 +24,9 @@ export const routes = [
   {
     path: "/user",
     component: User,
-    protected: true,
+  },
+  {
+    path: "/chat",
+    component: Chat,
   },
 ];

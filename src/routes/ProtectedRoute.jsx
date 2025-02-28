@@ -1,11 +1,26 @@
 // React Router Dom
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+// Import Service
+import { checkUser } from "../services/authService";
+
+import { useEffect } from "react";
 
 // eslint-disable-next-line react/prop-types
 const ProtectedRoute = ({ children }) => {
-  const user = JSON.parse(localStorage.getItem("userInfo") || "null");
-
-  return user ? children : <Navigate to="/authentication" replace />;
+  const navigate = useNavigate();
+  useEffect(() => {
+    const check = async () => {
+      const response = await checkUser();
+      if (response.statusCode !== 200) {
+        localStorage.removeItem("userInfo");
+        localStorage.removeItem("accessToken");
+        return navigate("/authentication");
+      }
+    };
+    check();
+  }, [navigate]);
+  return children;
 };
 
 export default ProtectedRoute;

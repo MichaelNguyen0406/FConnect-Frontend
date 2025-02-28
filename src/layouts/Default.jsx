@@ -9,7 +9,7 @@ function Default({ children }) {
     <Box sx={{ display: "flex" }}>
       <Sidebar />
       <Box flex={1}>
-        <Header />
+        {/* <Header /> */}
         {children}
       </Box>
     </Box>

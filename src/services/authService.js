@@ -23,17 +23,24 @@ export const verifyOtp = async (email, otp) => {
   }
 };
 
-export const loginEmail = async (email) => {
+export const checkUser = async () => {
   try {
-    const response = await axiosInstance.post(`/auth/login-email`, {
-      email,
-    });
+    const response = await axiosInstance.get(`/auth/user-info`);
     return response.data;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
 
-export const loginGoogle = async () => {
-  window.location.href = "http://localhost:8080/v1/auth/google";
+export const refreshToken = async (refreshToken) => {
+  try {
+    const response = await axiosInstance.post(`/auth/refresh-token`, {
+      refreshToken,
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 };

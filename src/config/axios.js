@@ -1,6 +1,8 @@
 import axios from "axios";
 import env from "./env";
 
+import { refreshToken } from "../services/authService";
+
 const axiosInstance = axios.create({
   baseURL: env.API_BASE_URL,
 });
@@ -13,6 +15,7 @@ axiosInstance.interceptors.request.use(
     // Do something before request is sent
     const token = localStorage.getItem("accessToken");
     if (token) {
+      console.log("accessToken", token);
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -30,7 +33,23 @@ axiosInstance.interceptors.response.use(
     // Do something with response data
     return response;
   },
-  function (error) {
+  async function (error) {
+    const originalRequest = error.config;
+    console.log(error.response.status);
+    if (error.response.status === 401) {
+      console.log("Logout");
+    } else if (error.response.status === 410 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const token = localStorage.getItem("refreshToken");
+      const response = await refreshToken(token);
+      console.log(response.statusCode);
+      if (response.statusCode === 200) {
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
+      }
+      originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
+      return axiosInstance(originalRequest);
+    }
     return Promise.reject(error.response.data);
   }
 );

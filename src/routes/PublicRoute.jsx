@@ -5,7 +5,7 @@ import { Navigate } from "react-router-dom";
 export const PublicRoute = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("userInfo") || "null");
 
-  return user ? <Navigate to="/dashboard" replace /> : children;
+  return user ? <Navigate to="/" replace /> : children;
 };
 
 export default PublicRoute;

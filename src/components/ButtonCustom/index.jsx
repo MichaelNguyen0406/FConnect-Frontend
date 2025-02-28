@@ -14,7 +14,7 @@ function ButtonCustom({ loading, onClick, children, ...props }) {
         p: "16.5px 0px",
         boxSizing: "content-box",
         mb: 2,
-        // color: "#FFF",
+        color: "#FFF",
       }}
     >
       {children}
