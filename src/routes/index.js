@@ -11,6 +11,7 @@ export const routes = [
   {
     path: "/",
     component: Home,
+    layout: null,
   },
   {
     path: "/dashboard",
@@ -24,6 +25,10 @@ export const routes = [
   {
     path: "/user",
     component: User,
+  },
+  {
+    path: "/chat/:id/:receiverId",
+    component: Chat,
   },
   {
     path: "/chat",

@@ -21,7 +21,7 @@ function AuthProvider({ children }) {
     const check = async () => {
       try {
         const response = await checkUser();
-        console.log(response);
+        // console.log(response);
         if (response.statusCode === 200) {
           setUserLogin(true);
           setUserId(response.data.userInfo);

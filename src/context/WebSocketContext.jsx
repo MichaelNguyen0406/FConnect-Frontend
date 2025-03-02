@@ -7,6 +7,7 @@ const WebSocketContext = createContext(null);
 export const WebSocketProvider = ({ children }) => {
   const [ws, setWs] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [rooms, setRooms] = useState([]);
   const { userId } = useAuth();
 
   const connectWebSocket = () => {
@@ -20,12 +21,14 @@ export const WebSocketProvider = ({ children }) => {
     };
 
     websocket.onmessage = (event) => {
-      console.log(event.data);
       const data = JSON.parse(event.data);
-      if (data.type === "history") {
+      // console.log(data);
+      if (data.type === "matched") {
         setMessages(data.data);
       } else if (data.type === "sendMessage") {
-        setMessages((prev) => [...prev, data]);
+        // console.log(data);
+        setMessages(data);
+        // setRooms((prev) => [...prev]);
       }
     };
 
@@ -45,7 +48,7 @@ export const WebSocketProvider = ({ children }) => {
   }, []);
 
   return (
-    <WebSocketContext.Provider value={{ ws, messages }}>
+    <WebSocketContext.Provider value={{ ws, messages, rooms }}>
       {children}
     </WebSocketContext.Provider>
   );

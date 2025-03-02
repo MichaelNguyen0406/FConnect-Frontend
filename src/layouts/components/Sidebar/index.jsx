@@ -1,9 +1,9 @@
 // Import MUI
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import Diversity3Icon from "@mui/icons-material/Diversity3";
-import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
+// import DashboardIcon from "@mui/icons-material/Dashboard";
+// import Diversity3Icon from "@mui/icons-material/Diversity3";
+// import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
 
 // Import Components
 import NavItem from "./components/NavItem";
@@ -15,7 +15,7 @@ import { container } from "./indexStyle";
 import { useState, useEffect } from "react";
 
 // Import Service
-import { getReceivers } from "../../../services/chatService";
+import { getMatches } from "../../../services/chatService";
 
 // Import Context
 import { useAuth } from "../../../context/AuthContext";
@@ -40,38 +40,31 @@ import { useAuth } from "../../../context/AuthContext";
 
 function Sidebar() {
   const { userId } = useAuth();
-  const [active, setActive] = useState(0);
-  const [receivers, setReceivers] = useState([]);
+  const [match, setMatch] = useState([]);
 
   useEffect(() => {
-    const fetchReceivers = async () => {
-      const response = await getReceivers(userId);
+    const fetchMatch = async () => {
+      const response = await getMatches(userId);
       if (response.statusCode === 200) {
-        setReceivers(response.data.receivers);
+        setMatch(response.data);
       }
     };
 
-    fetchReceivers();
+    fetchMatch();
   }, []);
 
-  console.log(receivers);
+  console.log(match);
   return (
     <Box sx={container}>
       <Logo />
       <Divider />
       <Box>
-        {/* {navList.map((item, index) => (
+        {match.map((receiver) => (
           <NavItem
-            to={item.to}
-            Icon={item.icon}
-            text={item.text}
-            key={index}
-            active={active == index ? true : false}
-            onClick={() => setActive(index)}
+            key={receiver.matchId}
+            text={receiver.displayName}
+            to={`/chat/${receiver.matchId}/${receiver.receiverId}`}
           />
-        ))} */}
-        {receivers.map((receiver) => (
-          <Box key={receiver._id}>{receiver.displayName}</Box>
         ))}
       </Box>
       {/* <Divider /> */}

@@ -40,7 +40,7 @@ function NavItem({ to, Icon, text, active = false, onClick }) {
             {Icon}
           </IconCustom>
         </Box>
-        <Hidden lgDown>
+        <Hidden>
           <Typography
             sx={{
               fontWeight: "bold",

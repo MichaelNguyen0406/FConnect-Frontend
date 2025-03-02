@@ -15,7 +15,7 @@ axiosInstance.interceptors.request.use(
     // Do something before request is sent
     const token = localStorage.getItem("accessToken");
     if (token) {
-      console.log("accessToken", token);
+      // console.log("accessToken", token);
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
   },
   async function (error) {
     const originalRequest = error.config;
-    console.log(error.response.status);
+    // console.log(error.response.status);
     if (error.response.status === 401) {
       console.log("Logout");
     } else if (error.response.status === 410 && !originalRequest._retry) {

@@ -16,6 +16,7 @@ function Message({ pos, children }) {
           p: 1.5,
           borderRadius: 2,
           display: "inline-block",
+          mb: 1,
         }}
       >
         {children}
