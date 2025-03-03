@@ -11,6 +11,9 @@ function IconCustom({ children, color, bgcolor }) {
         color: color,
         bgcolor: bgcolor,
         borderRadius: "10px",
+        ":hover": {
+          bgcolor: "#E0E0E0",
+        },
       }}
     />
   );

@@ -11,7 +11,10 @@ export const routes = [
   {
     path: "/",
     component: Home,
-    layout: null,
+  },
+  {
+    path: "/home",
+    component: Home,
   },
   {
     path: "/dashboard",

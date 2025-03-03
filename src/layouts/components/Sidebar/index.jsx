@@ -1,10 +1,11 @@
 // Import MUI
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-// import DashboardIcon from "@mui/icons-material/Dashboard";
-// import Diversity3Icon from "@mui/icons-material/Diversity3";
-// import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
-
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import Diversity3Icon from "@mui/icons-material/Diversity3";
+import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
+import HolidayVillageIcon from "@mui/icons-material/HolidayVillage";
+import ChatIcon from "@mui/icons-material/Chat";
 // Import Components
 import NavItem from "./components/NavItem";
 import Logo from "./components/Logo";
@@ -39,24 +40,24 @@ import { useAuth } from "../../../context/AuthContext";
 // ];
 
 function Sidebar() {
-  const { userId } = useAuth();
-  const [match, setMatch] = useState([]);
+  // const { userId } = useAuth();
+  // const [match, setMatch] = useState([]);
 
-  useEffect(() => {
-    const fetchMatch = async () => {
-      const response = await getMatches(userId);
-      if (response.statusCode === 200) {
-        setMatch(response.data);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchMatch = async () => {
+  //     const response = await getMatches(userId);
+  //     if (response.statusCode === 200) {
+  //       setMatch(response.data);
+  //     }
+  //   };
 
-    fetchMatch();
-  }, []);
+  //   fetchMatch();
+  // }, []);
 
-  console.log(match);
+  // console.log(match);
   return (
     <Box sx={container}>
-      <Logo />
+      {/* <Logo />
       <Divider />
       <Box>
         {match.map((receiver) => (
@@ -66,8 +67,25 @@ function Sidebar() {
             to={`/chat/${receiver.matchId}/${receiver.receiverId}`}
           />
         ))}
-      </Box>
+      </Box> */}
       {/* <Divider /> */}
+      <Box>
+        <Logo />
+        <Box
+          sx={{
+            mt: "68px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <NavItem Icon={HolidayVillageIcon} to="/" />
+          <NavItem Icon={ChatIcon} to="/chat" />
+          <NavItem Icon={DashboardIcon} to="/chat" />
+          <NavItem Icon={Diversity3Icon} to="/chat" />
+        </Box>
+      </Box>
+      <NavItem Icon={SettingsSuggestIcon} />
     </Box>
   );
 }

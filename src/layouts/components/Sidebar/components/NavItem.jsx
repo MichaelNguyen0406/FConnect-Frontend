@@ -21,7 +21,7 @@ function NavItem({ to, Icon, text, active = false, onClick }) {
         backgroundColor: "inherit",
       }}
     >
-      <ListItem
+      {/* <ListItem
         onClick={onClick}
         sx={{
           bgcolor: active && "#FFF",
@@ -31,16 +31,20 @@ function NavItem({ to, Icon, text, active = false, onClick }) {
             cursor: "pointer",
           },
         }}
+      > */}
+      <Box
+        sx={{
+          mb: 1,
+        }}
       >
-        <Box>
-          <IconCustom
-            bgcolor={active ? "primary.main" : "#FFF"}
-            color={!active ? "primary.main" : "#FFF"}
-          >
-            {Icon}
-          </IconCustom>
-        </Box>
-        <Hidden>
+        <IconCustom
+          bgcolor={active ? "primary.main" : "#FFF"}
+          color={!active ? "primary.main" : "#FFF"}
+        >
+          {Icon}
+        </IconCustom>
+      </Box>
+      {/* <Hidden>
           <Typography
             sx={{
               fontWeight: "bold",
@@ -51,8 +55,8 @@ function NavItem({ to, Icon, text, active = false, onClick }) {
           >
             {text}
           </Typography>
-        </Hidden>
-      </ListItem>
+        </Hidden> */}
+      {/* </ListItem> */}
     </NavLink>
   );
 }

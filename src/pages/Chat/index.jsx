@@ -1,8 +1,10 @@
 import Box from "@mui/material/Box";
-import { TextField, Button } from "@mui/material";
 
 // Import Component
 import Message from "./components/Message";
+import Sidebar from "./components/Sidebar";
+import HeaderChat from "./components/HeaderChat";
+import SendForm from "./components/SendForm";
 
 // Import React
 import { useState, useEffect } from "react";
@@ -33,13 +35,14 @@ function Chat() {
         setRenderMessages(response.data);
       }
     };
-
-    fetchMessages();
+    if (id) {
+      fetchMessages();
+    }
   }, [id]);
 
   useEffect(() => {
     // console.log(messages);
-    if (messages.matchId === id) {
+    if (messages.length && messages.matchId === id) {
       setRenderMessages((prev) => [...prev, messages]);
     }
     // alert(messages.content);
@@ -71,57 +74,60 @@ function Chat() {
   };
 
   const handleChange = (e) => {
+    // console.log(e.key);
     setInput(e.target.value);
   };
+
+  const handleKeyUp = (e) => {
+    if (e.key === "Enter") {
+      sendMessage(message);
+    }
+  };
+
+  console.log(renderMessages);
 
   return (
     <Box
       sx={{
-        position: "relative",
         height: "100vh",
-        border: "1px solid #DEDEDE",
+        display: "flex",
+        bgcolor: "#FFF",
       }}
     >
-      <Box sx={{ p: 2, height: "90%", overflowY: "scroll" }}>
-        {renderMessages.map((message, index) => {
-          if (message.senderId === userId) {
-            return (
-              <Message key={index} pos="end">
-                {message.content}
-              </Message>
-            );
-          } else {
-            return (
-              <Message key={index} pos="start">
-                {message.content}
-              </Message>
-            );
-          }
-        })}
-      </Box>
-
+      <Sidebar />
       <Box
         sx={{
-          position: "fixed",
-          bottom: 0,
-          display: "flex",
+          border: "1px solid rgb(233, 233, 233)",
           flex: 1,
-          gap: 1,
-          width: "calc(100% - 300px)",
-          p: "10px 10px 30px  10px",
-          borderRadius: "4px",
-          borderTop: "1px solid #DEDEDE",
-          bgcolor: "#FFF",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <TextField sx={{ flex: 8 }} onChange={handleChange} value={input} />
-        <Button
-          sx={{ flex: 1, color: "#FFF" }}
-          variant="contained"
-          onClick={() => sendMessage(message)}
-        >
-          SEND
-        </Button>
+        <HeaderChat displayName="Nguyen Truong An" />
+
+        <Box sx={{ p: 3, flex: 1 }}>
+          {renderMessages.map((message, index) => {
+            if (message.senderId === userId) {
+              return (
+                <Message key={index} pos="end">
+                  {message.content}
+                </Message>
+              );
+            } else {
+              return (
+                <Message key={index} pos="start">
+                  {message.content}
+                </Message>
+              );
+            }
+          })}
+        </Box>
+
+        <SendForm
+          input={input}
+          handleChange={handleChange}
+          handleKeyUp={handleKeyUp}
+        />
       </Box>
     </Box>
   );
