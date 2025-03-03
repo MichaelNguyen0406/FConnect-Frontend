@@ -30,7 +30,7 @@ export const routes = [
     component: User,
   },
   {
-    path: "/chat/:id/:receiverId",
+    path: "/chat/:matchId",
     component: Chat,
   },
   {

@@ -9,7 +9,9 @@ function SendForm({ input, handleChange, handleKeyUp }) {
     <Box
       sx={{
         display: "flex",
+        alignItems: "center",
         p: 3,
+        gap: 1,
       }}
     >
       <Box
@@ -31,9 +33,18 @@ function SendForm({ input, handleChange, handleKeyUp }) {
           disableUnderline
           fullWidth
           placeholder="Gửi tin nhắn"
-          endAdornment={<IconCustom>{SendIcon}</IconCustom>}
+          // endAdornment={
+          //   // <SendIcon
+          //   //   sx={{
+          //   //     mr: "16px",
+          //   //     ":hover": { cursor: "pointer", color: "primary.main" },
+          //   //   }}
+          //   // />
+
+          // }
         />
       </Box>
+      <IconCustom color="primary.main">{SendIcon}</IconCustom>
     </Box>
   );
 }

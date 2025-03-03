@@ -9,23 +9,11 @@ import { Button } from "@mui/material";
 // Import Context
 import { useWebSocket } from "../../context/WebSocketContext";
 
-import { useNavigate } from "react-router-dom";
-
 // import videoBg from "../../assets/videoBg.mp4";
 
 function Home() {
-  const { ws, messages } = useWebSocket();
+  const { ws } = useWebSocket();
   const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log(messages);
-    if (messages.type === "matched") {
-      setLoading(false);
-      navigate(`/chat/${messages.matchId}/${messages.opponentId}`);
-    }
-  }, [messages]);
 
   const handleClick = () => {
     setLoading(true);

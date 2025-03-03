@@ -6,13 +6,14 @@ function IconCustom({ children, color, bgcolor }) {
     <SvgIcon
       component={children}
       sx={{
-        fontSize: 45,
+        fontSize: 50,
         padding: "7.5px",
         color: color,
         bgcolor: bgcolor,
-        borderRadius: "10px",
+        borderRadius: "50%",
         ":hover": {
           bgcolor: "#E0E0E0",
+          cursor: "pointer",
         },
       }}
     />

@@ -5,25 +5,9 @@ import Header from "./Header";
 import Searchbar from "./Searchbar";
 import RoomItem from "./RoomItem";
 
-import { getMatches } from "../../../services/chatService";
-
-import { useEffect, useState } from "react";
-import { useAuth } from "../../../context/AuthContext";
-
-function Sidebar() {
-  const [match, setMatch] = useState([]);
-  const { userId } = useAuth();
-
-  useEffect(() => {
-    const fetchMatch = async () => {
-      const response = await getMatches(userId);
-      if (response.statusCode === 200) {
-        setMatch(response.data);
-      }
-    };
-
-    fetchMatch();
-  }, []);
+// eslint-disable-next-line react/prop-types
+function Sidebar({ listReceiver = new Map(), matchId }) {
+  // console.log(listReceiver.size);
 
   return (
     <Box
@@ -35,14 +19,26 @@ function Sidebar() {
 
       <Box
         sx={{
-          p: "12px 24px",
+          p: "12px 0px",
         }}
       >
-        <Searchbar />
+        <Box px={3}>
+          <Searchbar />
+        </Box>
         <Box mt="16px">
-          {!match.length
+          {!listReceiver.size
             ? "Chưa có tin nhắn"
-            : match.map((receiver) => <RoomItem key={receiver.matchId} />)}
+            : [...listReceiver.values()].map((receiver) => {
+                // console.log(999);
+                return (
+                  <RoomItem
+                    active={receiver.matchId === matchId}
+                    key={receiver.matchId}
+                    to={`/chat/${receiver.matchId}`}
+                    displayName={receiver.displayName}
+                  />
+                );
+              })}
         </Box>
       </Box>
     </Box>

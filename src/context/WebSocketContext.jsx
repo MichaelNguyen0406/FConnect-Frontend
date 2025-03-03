@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const WebSocketContext = createContext(null);
 
@@ -9,6 +10,7 @@ export const WebSocketProvider = ({ children }) => {
   const [messages, setMessages] = useState([]);
   const [rooms, setRooms] = useState([]);
   const { userId } = useAuth();
+  const navigate = useNavigate();
 
   const connectWebSocket = () => {
     // Kết nối WebSocket
@@ -22,9 +24,9 @@ export const WebSocketProvider = ({ children }) => {
 
     websocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      // console.log(data);
+      console.log(data);
       if (data.type === "matched") {
-        setMessages(data.data);
+        navigate(`/chat/${data.matchId}`);
       } else if (data.type === "sendMessage") {
         // console.log(data);
         setMessages(data);
