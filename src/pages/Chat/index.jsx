@@ -104,7 +104,6 @@ function Chat() {
         }}
       >
         <HeaderChat displayName="Nguyen Truong An" />
-
         <Box sx={{ p: 3, flex: 1 }}>
           {renderMessages.map((message, index) => {
             if (message.senderId === userId) {
@@ -122,7 +121,6 @@ function Chat() {
             }
           })}
         </Box>
-
         <SendForm
           input={input}
           handleChange={handleChange}
