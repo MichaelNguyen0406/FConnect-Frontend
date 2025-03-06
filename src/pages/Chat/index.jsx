@@ -14,52 +14,66 @@ import { useAuth } from "../../context/AuthContext";
 import { useParams } from "react-router-dom";
 
 // Import Service
-import { getMessages, getMatches } from "../../services/chatService";
+import { getMessages, getListMatch } from "../../services/chatService";
 
-// const listReceiver = new Map();
+import Lottie from "lottie-react";
+import typingAnimation from "../../assets/animationTyping.json";
 
 function Chat() {
   const [input, setInput] = useState("");
-  // const [listReceiver, setListReceiver] = useState([]);
-  const [match, setMatch] = useState([]);
   const [renderMessages, setRenderMessages] = useState([]);
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [isReady, setIsReady] = useState(false);
-  const [listReceiver, setListReceiver] = useState(new Map());
   const { ws, messages } = useWebSocket();
   const { matchId } = useParams();
   const { userId } = useAuth();
   const chatContainerRef = useRef(null);
-
-  // Scroll xuống cuối mỗi khi có tin nhắn mới
-  useEffect(() => {
-    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-  }, [renderMessages]);
-
-  // if (id && receiverId) {
-  //   console.log("ID: ", id, "ReceiverId: ", receiverId);
-  // }
+  const [listMatch, setListMatch] = useState(new Map());
+  const [loadingListMatch, setLoadingListMatch] = useState(true);
+  const [isFirstTyping, setIsFirstTyping] = useState(true);
+  const typingTimeout = useRef(null);
+  const [candidateTyping, setCandidateTyping] = useState(false);
+  const [lastMsg, setLastMsg] = useState(null);
 
   useEffect(() => {
-    const fetchMatch = async () => {
-      const response = await getMatches(userId);
+    if (isAtBottom && matchId) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+    if (isAtBottom && candidateTyping && matchId) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [renderMessages, candidateTyping]);
+
+  // Fetch List Match Sidebar
+  useEffect(() => {
+    const fetchListMatch = async () => {
+      const response = await getListMatch(userId);
+      // console.log(response);
       if (response.statusCode === 200) {
-        // setMatch(response.data);
-        const receiverMap = new Map();
-        response.data.forEach((receiver) => {
-          receiverMap.set(receiver.matchId, receiver);
+        response.data.forEach((match) => {
+          const receiverId =
+            match.userId1 === userId ? match.userId2 : match.userId1;
+          const matchId = match._id;
+          listMatch.set(matchId, {
+            receiverId,
+            matchId,
+            lastMessage: match.lastMessage,
+          });
         });
-        setListReceiver(receiverMap);
+        setListMatch(listMatch);
       }
+      setLoadingListMatch(false);
     };
 
-    fetchMatch();
+    fetchListMatch();
   }, []);
 
+  // Fetch List Message
   useEffect(() => {
     const fetchMessages = async () => {
       const response = await getMessages(matchId);
-      // console.log(response);
       if (response.statusCode === 200) {
         setRenderMessages(response.data);
         setIsReady(true);
@@ -69,21 +83,19 @@ function Chat() {
       fetchMessages();
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
-      // console.log(listReceiver);
     }
   }, [matchId]);
 
   useEffect(() => {
-    // console.log(messages.length, messages.matchId === matchId);
-    if (messages && messages.matchId === matchId) {
-      // console.log(messages);
+    if (messages.type === "receiveMessage" && messages.matchId === matchId) {
       setRenderMessages((prev) => [...prev, messages]);
     }
-    // alert(messages.content);
+    if (messages.type === "typing" && messages.matchId === matchId) {
+      setCandidateTyping(messages.status);
+    }
   }, [messages]);
 
   const sendMessage = (message) => {
-    // console.log(message);
     if (ws) {
       if (message.type === "sendMessage") {
         setRenderMessages((prev) => [...prev, message]);
@@ -92,10 +104,37 @@ function Chat() {
             type: message.type,
             content: message.content,
             matchId,
-            receiverId: listReceiver.get(matchId)?.receiverId,
+            receiverId: listMatch.get(matchId).receiverId,
           })
         );
         setInput("");
+      } else if (message.type === "typing") {
+        if (isFirstTyping) {
+          ws.send(
+            JSON.stringify({
+              type: message.type,
+              matchId,
+              status: true,
+              receiverId: listMatch.get(matchId).receiverId,
+            })
+          );
+          setIsFirstTyping(false);
+        }
+        if (typingTimeout.current) {
+          clearTimeout(typingTimeout.current);
+        }
+
+        typingTimeout.current = setTimeout(() => {
+          ws.send(
+            JSON.stringify({
+              type: message.type,
+              matchId,
+              status: false,
+              receiverId: listMatch.get(matchId).receiverId,
+            })
+          );
+          setIsFirstTyping(true);
+        }, 3000);
       }
     }
   };
@@ -110,11 +149,16 @@ function Chat() {
   const handleChange = (e) => {
     // console.log(e.key);
     setInput(e.target.value);
+    sendMessage({
+      type: "typing",
+      matchId,
+    });
   };
 
   const handleKeyUp = (e) => {
     if (e.key === "Enter") {
       sendMessage(message);
+      setLastMsg(message.content);
     }
   };
 
@@ -126,12 +170,6 @@ function Chat() {
     }
   };
 
-  // console.log(renderMessages);
-  // console.log(receiver);
-  // console.log(matchId);
-  // console.log(listReceiver.get(matchId));
-  console.log(listReceiver);
-
   return (
     <Box
       sx={{
@@ -140,7 +178,12 @@ function Chat() {
         bgcolor: "#FFF",
       }}
     >
-      <Sidebar listReceiver={listReceiver} matchId={matchId} />
+      <Sidebar
+        listMatch={listMatch}
+        loading={loadingListMatch}
+        matchId={matchId}
+        lastMsg={lastMsg}
+      />
       <Box
         sx={{
           border: "1px solid rgb(233, 233, 233)",
@@ -149,33 +192,55 @@ function Chat() {
           flexDirection: "column",
         }}
       >
-        <HeaderChat displayName={listReceiver.get(matchId)?.displayName} />
-        <Box
-          ref={chatContainerRef}
-          onScroll={handleScroll}
-          sx={{ p: 3, flex: 1, overflowY: "auto", opacity: isReady ? 1 : 0 }}
-        >
-          {renderMessages.map((message, index) => {
-            if (message.senderId === userId) {
-              return (
-                <Message key={index} pos="end">
-                  {message.content}
-                </Message>
-              );
-            } else {
-              return (
-                <Message key={index} pos="start">
-                  {message.content}
-                </Message>
-              );
-            }
-          })}
-        </Box>
-        <SendForm
-          input={input}
-          handleChange={handleChange}
-          handleKeyUp={handleKeyUp}
-        />
+        {matchId && (
+          <>
+            <HeaderChat displayName="Anonymous" />
+            <Box
+              ref={chatContainerRef}
+              onScroll={handleScroll}
+              sx={{
+                p: 3,
+                flex: 1,
+                overflowY: "auto",
+                opacity: isReady ? 1 : 0,
+              }}
+            >
+              {renderMessages.map((message, index) => {
+                if (message.senderId === userId) {
+                  return (
+                    <Message key={index} pos="end">
+                      {message.content}
+                    </Message>
+                  );
+                } else {
+                  return (
+                    <Message key={index} pos="start">
+                      {message.content}
+                    </Message>
+                  );
+                }
+              })}
+              {candidateTyping && (
+                <Lottie
+                  animationData={typingAnimation}
+                  loop={true}
+                  style={{
+                    width: 53,
+                    height: 40,
+                    backgroundColor: "#E0E0E0",
+                    borderRadius: "50px",
+                    marginTop: "2px",
+                  }}
+                />
+              )}
+            </Box>
+            <SendForm
+              input={input}
+              handleChange={handleChange}
+              handleKeyUp={handleKeyUp}
+            />
+          </>
+        )}
       </Box>
     </Box>
   );

@@ -4,7 +4,8 @@ import Dashboard from "../pages/Dashboard";
 import User from "../pages/User";
 import Home from "../pages/Home";
 import Chat from "../pages/Chat";
-
+import Profile from "../pages/Profile";
+import EditProfile from "../pages/EditProfile";
 // Layout
 
 export const routes = [
@@ -15,6 +16,14 @@ export const routes = [
   {
     path: "/home",
     component: Home,
+  },
+  {
+    path: "/edit-profile/:userId",
+    component: EditProfile,
+  },
+  {
+    path: "/profile/:userId",
+    component: Profile,
   },
   {
     path: "/dashboard",

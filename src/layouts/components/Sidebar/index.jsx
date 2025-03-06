@@ -6,6 +6,7 @@ import Diversity3Icon from "@mui/icons-material/Diversity3";
 import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
 import HolidayVillageIcon from "@mui/icons-material/HolidayVillage";
 import ChatIcon from "@mui/icons-material/Chat";
+import PersonIcon from "@mui/icons-material/Person";
 // Import Components
 import NavItem from "./components/NavItem";
 import Logo from "./components/Logo";
@@ -16,7 +17,6 @@ import { container } from "./indexStyle";
 import { useState, useEffect } from "react";
 
 // Import Service
-import { getMatches } from "../../../services/chatService";
 
 // Import Context
 import { useAuth } from "../../../context/AuthContext";
@@ -40,7 +40,7 @@ import { useAuth } from "../../../context/AuthContext";
 // ];
 
 function Sidebar() {
-  // const { userId } = useAuth();
+  const { userId } = useAuth();
   // const [match, setMatch] = useState([]);
 
   // useEffect(() => {
@@ -81,8 +81,8 @@ function Sidebar() {
         >
           <NavItem Icon={HolidayVillageIcon} to="/" />
           <NavItem Icon={ChatIcon} to="/chat" />
-          <NavItem Icon={DashboardIcon} to="/chat" />
-          <NavItem Icon={Diversity3Icon} to="/chat" />
+          <NavItem Icon={PersonIcon} to={`/profile/${userId}`} />
+          <NavItem Icon={Diversity3Icon} to="/" />
         </Box>
       </Box>
       <NavItem Icon={SettingsSuggestIcon} />

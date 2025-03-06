@@ -1,6 +1,6 @@
 import axiosInstance from "../config/axios";
 
-export const getListMatch = async (userId) => {
+export const getUser = async (userId) => {
   try {
     const response = await axiosInstance.get(`/match/get-list-match/${userId}`);
     return response.data;

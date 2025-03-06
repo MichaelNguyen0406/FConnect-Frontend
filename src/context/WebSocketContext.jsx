@@ -8,7 +8,6 @@ const WebSocketContext = createContext(null);
 export const WebSocketProvider = ({ children }) => {
   const [ws, setWs] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [rooms, setRooms] = useState([]);
   const { userId } = useAuth();
   const navigate = useNavigate();
 
@@ -24,13 +23,12 @@ export const WebSocketProvider = ({ children }) => {
 
     websocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log(data);
+      // console.log(data);
+      // console.log(data);
       if (data.type === "matched") {
         navigate(`/chat/${data.matchId}`);
-      } else if (data.type === "sendMessage") {
-        // console.log(data);
+      } else {
         setMessages(data);
-        // setRooms((prev) => [...prev]);
       }
     };
 
@@ -50,7 +48,7 @@ export const WebSocketProvider = ({ children }) => {
   }, []);
 
   return (
-    <WebSocketContext.Provider value={{ ws, messages, rooms }}>
+    <WebSocketContext.Provider value={{ ws, messages }}>
       {children}
     </WebSocketContext.Provider>
   );

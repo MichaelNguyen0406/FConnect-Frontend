@@ -11,12 +11,12 @@ function Message({ pos, children }) {
     >
       <Typography
         sx={{
-          color: "#FFF",
-          bgcolor: "#333",
-          p: 1.5,
-          borderRadius: 2,
+          color: pos === "start" ? "#333" : "#FFF",
+          bgcolor: pos === "start" ? "#E0E0E0" : "primary.main",
+          p: "8px 12px",
+          borderRadius: "50px",
           display: "inline-block",
-          mb: 1,
+          mb: "2px",
         }}
       >
         {children}

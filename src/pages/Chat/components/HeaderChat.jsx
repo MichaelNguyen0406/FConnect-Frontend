@@ -18,9 +18,7 @@ function HeaderChat({ displayName, status }) {
         <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
           {displayName}
         </Typography>
-        <Typography sx={{ fontSize: "14px", color: "#777" }}>
-          offline
-        </Typography>
+        <Typography sx={{ fontSize: "14px", color: "#777" }}>...</Typography>
       </Box>
     </Box>
   );

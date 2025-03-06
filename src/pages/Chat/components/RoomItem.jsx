@@ -3,9 +3,18 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 // eslint-disable-next-line react/prop-types
 import { NavLink } from "react-router-dom";
+import { useWebSocket } from "../../../context/WebSocketContext";
+import { useState, useEffect } from "react";
 
 // eslint-disable-next-line react/prop-types
-function RoomItem({ displayName, to, active }) {
+function RoomItem({ to, active, lastMessage }) {
+  // const [lastMsg, setLastMsg] = useState(lastMessage);
+  // const { messages } = useWebSocket();
+  // useEffect(() => {
+  //   if (messages.type === "receiveMessage") {
+  //     setLastMsg(messages.content);
+  //   }
+  // }, [messages]);
   return (
     <NavLink
       to={to}
@@ -31,11 +40,9 @@ function RoomItem({ displayName, to, active }) {
         <Avatar sx={{ width: 48, height: 48 }} />
         <Box sx={{ ml: "16px" }}>
           <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>
-            {displayName}
+            Anonymous
           </Typography>
-          <Typography sx={{ fontSize: "14px", color: "#777" }}>
-            Hello
-          </Typography>
+          <Typography sx={{ fontSize: "14px", color: "#777" }}>...</Typography>
         </Box>
       </Box>
     </NavLink>

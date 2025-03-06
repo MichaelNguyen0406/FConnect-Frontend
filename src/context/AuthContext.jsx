@@ -43,7 +43,7 @@ function AuthProvider({ children }) {
     if (!loading) {
       if (userLogin) {
         if (location.pathname === "/authentication") {
-          navigate("/chat");
+          navigate("/");
         }
       } else {
         navigate("/authentication");
