@@ -1,18 +1,17 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
 // Import Service
 import { checkUser } from "../services/authService";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
 export const useAuth = () => useContext(AuthContext);
 
 function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
   const [userLogin, setUserLogin] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,11 +23,10 @@ function AuthProvider({ children }) {
         // console.log(response);
         if (response.statusCode === 200) {
           setUserLogin(true);
-          setUserId(response.data.userInfo);
-          localStorage.setItem("userInfo", response.data.userInfo);
+          setUserInfo(response.data);
         } else {
           setUserLogin(null);
-          setUserId(null);
+          setUserInfo(null);
         }
       } catch (error) {
         console.log("Please login.", error);
@@ -37,9 +35,11 @@ function AuthProvider({ children }) {
       }
     };
     check();
-  }, []);
+  }, [userLogin]);
 
   useEffect(() => {
+    // console.log(userLogin);
+    // console.log(loading);
     if (!loading) {
       if (userLogin) {
         if (location.pathname === "/authentication") {
@@ -56,15 +56,19 @@ function AuthProvider({ children }) {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     setUserLogin(null);
-    setUserId(null);
+    setUserInfo(null);
     navigate("/authentication");
   };
 
-  const value = { userId, logout };
+  const value = { userInfo, logout, setUserLogin };
 
-  if (loading) return <h1>Loading...</h1>;
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  if (loading) {
+    return <h1>Loading...</h1>;
+  } else {
+    return (
+      <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    );
+  }
 }
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,

@@ -8,7 +8,7 @@ const WebSocketContext = createContext(null);
 export const WebSocketProvider = ({ children }) => {
   const [ws, setWs] = useState(null);
   const [messages, setMessages] = useState([]);
-  const { userId } = useAuth();
+  const { userInfo } = useAuth();
   const navigate = useNavigate();
 
   const connectWebSocket = () => {
@@ -17,8 +17,12 @@ export const WebSocketProvider = ({ children }) => {
     setWs(websocket);
 
     websocket.onopen = () => {
-      console.log("Connected to server");
-      websocket.send(JSON.stringify({ type: "connect", userId }));
+      if (userInfo) {
+        console.log("Connected to server");
+        websocket.send(
+          JSON.stringify({ type: "connect", userId: userInfo._id })
+        );
+      }
     };
 
     websocket.onmessage = (event) => {

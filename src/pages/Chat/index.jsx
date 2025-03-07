@@ -26,7 +26,7 @@ function Chat() {
   const [isReady, setIsReady] = useState(false);
   const { ws, messages } = useWebSocket();
   const { matchId } = useParams();
-  const { userId } = useAuth();
+  const { userInfo } = useAuth();
   const chatContainerRef = useRef(null);
   const [listMatch, setListMatch] = useState(new Map());
   const [loadingListMatch, setLoadingListMatch] = useState(true);
@@ -49,12 +49,12 @@ function Chat() {
   // Fetch List Match Sidebar
   useEffect(() => {
     const fetchListMatch = async () => {
-      const response = await getListMatch(userId);
+      const response = await getListMatch(userInfo._id);
       // console.log(response);
       if (response.statusCode === 200) {
         response.data.forEach((match) => {
           const receiverId =
-            match.userId1 === userId ? match.userId2 : match.userId1;
+            match.userId1 === userInfo._id ? match.userId2 : match.userId1;
           const matchId = match._id;
           listMatch.set(matchId, {
             receiverId,
@@ -139,13 +139,6 @@ function Chat() {
     }
   };
 
-  const message = {
-    type: "sendMessage",
-    content: input,
-    senderId: userId,
-    matchId,
-  };
-
   const handleChange = (e) => {
     // console.log(e.key);
     setInput(e.target.value);
@@ -157,8 +150,13 @@ function Chat() {
 
   const handleKeyUp = (e) => {
     if (e.key === "Enter") {
-      sendMessage(message);
-      setLastMsg(message.content);
+      sendMessage({
+        type: "sendMessage",
+        content: input,
+        senderId: userInfo._id,
+        matchId,
+      });
+      // setLastMsg(message.content);
     }
   };
 
@@ -206,7 +204,7 @@ function Chat() {
               }}
             >
               {renderMessages.map((message, index) => {
-                if (message.senderId === userId) {
+                if (message.senderId === userInfo._id) {
                   return (
                     <Message key={index} pos="end">
                       {message.content}

@@ -10,8 +10,8 @@ const InfoForm = ({ listValue = [] }) => {
       defaultValue={listValue[0].value}
       sx={{ mb: 2 }}
     >
-      {listValue.map((option) => (
-        <MenuItem key={option.value} value={option.value}>
+      {listValue.map((option, index) => (
+        <MenuItem key={index} value={option.value}>
           {option.label}
         </MenuItem>
       ))}

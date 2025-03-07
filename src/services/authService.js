@@ -25,7 +25,7 @@ export const verifyOtp = async (email, otp) => {
 
 export const checkUser = async () => {
   try {
-    const response = await axiosInstance.get(`/auth/user-info`);
+    const response = await axiosInstance.get(`/auth/get-user-info`);
     return response.data;
   } catch (error) {
     console.log(error);

@@ -9,17 +9,19 @@ import { useAuth } from "../../context/AuthContext";
 
 function Home() {
   const { ws } = useWebSocket();
-  const { userId } = useAuth();
+  const { userInfo } = useAuth();
   const [loading, setLoading] = useState(false);
+
+  // console.log(userInfo);
 
   const handleClick = () => {
     setLoading(true);
-    ws.send(JSON.stringify({ type: "findMatch", userId }));
+    ws.send(JSON.stringify({ type: "findMatch", userId: userInfo._id }));
   };
 
   const handleCancel = () => {
     setLoading(false);
-    ws.send(JSON.stringify({ type: "cancelMatch", userId }));
+    ws.send(JSON.stringify({ type: "cancelMatch", userId: userInfo._id }));
   };
 
   return (

@@ -16,12 +16,17 @@ import { sendOtp, verifyOtp } from "../../services/authService";
 
 // Import Helper
 import checkEmail from "../../helper/checkEmail";
-// import Logo from "../../components/Logo";
+
+// Import Context
+import { useAuth } from "../../context/AuthContext";
 
 function Authentication() {
   const [step, setStep] = useState(0);
   const [email, setEmail] = useState({ value: "", error: null });
   const [otp, setOtp] = useState({ value: "", error: null });
+
+  // console.log(useAuth());
+  const { setUserLogin } = useAuth();
 
   const navigate = useNavigate();
 
@@ -48,7 +53,8 @@ function Authentication() {
     if (response.statusCode === 200) {
       localStorage.setItem("accessToken", response.data.accessToken);
       localStorage.setItem("refreshToken", response.data.refreshToken);
-      localStorage.setItem("userInfo", response.data.userInfo);
+      setUserLogin(true);
+      // setUserInfo(response.data.userInfo);
       navigate("/chat");
     } else {
       setOtp((prev) => ({ ...prev, error: "OTP không chính xác." }));
@@ -102,7 +108,6 @@ function Authentication() {
         p: 2,
       }}
     >
-      {/* <Logo /> */}
       <Typography
         variant="h4"
         sx={{
