@@ -40,7 +40,7 @@ import { useAuth } from "../../../context/AuthContext";
 // ];
 
 function Sidebar() {
-  const { userId } = useAuth();
+  const { userInfo } = useAuth();
   // const [match, setMatch] = useState([]);
 
   // useEffect(() => {
@@ -81,7 +81,7 @@ function Sidebar() {
         >
           <NavItem Icon={HolidayVillageIcon} to="/" />
           <NavItem Icon={ChatIcon} to="/chat" />
-          <NavItem Icon={PersonIcon} to={`/profile/${userId}`} />
+          <NavItem Icon={PersonIcon} to={`/profile/${userInfo?._id}`} />
           <NavItem Icon={Diversity3Icon} to="/" />
         </Box>
       </Box>

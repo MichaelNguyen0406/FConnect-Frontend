@@ -18,6 +18,14 @@ const listPicture = [
     value: null,
     label: "Dragon's Lair",
   },
+  {
+    value: null,
+    label: "Dragon's Lair",
+  },
+  {
+    value: null,
+    label: "Dragon's Lair",
+  },
 ];
 
 export default listPicture;

@@ -1,12 +1,14 @@
 import { TextField, MenuItem } from "@mui/material";
 
 // eslint-disable-next-line react/prop-types
-const InfoForm = ({ listValue = [] }) => {
+const SelectForm = ({ listValue = [], onChange, value }) => {
   return (
     <TextField
       id="outlined-select-currency"
       fullWidth
       select
+      onChange={onChange}
+      value={value}
       defaultValue={listValue[0].value}
       sx={{ mb: 2 }}
     >
@@ -19,4 +21,4 @@ const InfoForm = ({ listValue = [] }) => {
   );
 };
 
-export default InfoForm;
+export default SelectForm;
