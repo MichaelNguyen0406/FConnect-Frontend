@@ -1,18 +1,19 @@
 import axiosInstance from "../config/axios";
 
 /**
- * Thay doi ten User
  * URL: /profile/update-user
  * @param userId ID cua user
  * @param updateData New data
  */
-export const updateUser = async (userId, updateData, formData) => {
+export const updateUser = async (userId, formData) => {
   try {
     const response = await axiosInstance.patch(
       `/profile/update-user/${userId}`,
+      formData,
       {
-        updateData,
-        formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }
     );
     return response.data;

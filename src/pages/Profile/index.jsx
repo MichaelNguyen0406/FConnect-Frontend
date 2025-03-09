@@ -2,11 +2,21 @@ import { Box, Avatar, Typography } from "@mui/material";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { NavLink, useParams } from "react-router-dom";
 
+import { useAuth } from "../../context/AuthContext";
+
 function Profile() {
-  const { userId } = useParams();
+  // const { userId } = useParams();
+  const { userInfo } = useAuth();
 
   return (
-    <Box sx={{ width: "100%", height: "100vh", bgcolor: "#FFF" }}>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100vh",
+        bgcolor: "#FFF",
+        overflow: "scroll",
+      }}
+    >
       <Box sx={{ height: "456px", position: "relative" }}>
         <Box sx={{ height: "310px", bgcolor: "#DEDEDE" }}></Box>
         <Box
@@ -15,26 +25,38 @@ function Profile() {
             left: "50%",
             transform: "translateX(-50%)",
             bottom: "0",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
           <Avatar
-            src="https://i.pinimg.com/736x/fb/d3/a7/fbd3a701e65149dbe1813bddecbbce5b.jpg"
+            src={userInfo?.avatar}
             sx={{
               width: "180px",
               height: "180px",
-              // borderBlock: "6px",
               border: "4px solid #f0f0f0",
-              // borderStyle: "solid",
-              // borderColor: "#FF6738",
             }}
           />
-          <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              position: "relative",
+            }}
+          >
             <Typography sx={{ fontSize: "30px", fontWeight: "bold" }}>
-              Anonymous
+              {userInfo?.displayName}
             </Typography>
             <NavLink
-              to={`/edit-profile/${userId}`}
-              style={{ textDecoration: "none", color: "inherit" }}
+              to={`/edit-profile/${userInfo?._id}`}
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                position: "absolute",
+                right: "-60px",
+              }}
             >
               <Box
                 sx={{
@@ -73,7 +95,7 @@ function Profile() {
               },
             }}
           >
-            Artificial Intelligence
+            {userInfo?.major}
           </Box>
         </Box>
         {/* <Divider /> */}
@@ -95,7 +117,7 @@ function Profile() {
               },
             }}
           >
-            Male
+            {userInfo?.gender}
           </Box>
         </Box>
         {/* <Divider /> */}
@@ -153,6 +175,40 @@ function Profile() {
             }}
           >
             Read Book
+          </Box>
+        </Box>
+        <Box>
+          <Typography sx={{ fontSize: "16px", fontWeight: "bold", mt: 2 }}>
+            Picture
+          </Typography>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 2, // Khoảng cách giữa các ảnh
+            }}
+          >
+            {userInfo?.listPicture?.map((image, index) => (
+              <Box
+                key={index}
+                sx={{
+                  width: "100%", // Để grid chia đều 3 ảnh trên mỗi hàng
+                  aspectRatio: "3 / 4", // Giữ tỷ lệ ảnh 3:4
+                  overflow: "hidden",
+                  borderRadius: "8px",
+                }}
+              >
+                <img
+                  src={image}
+                  alt={`image-${index}`}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover", // Đảm bảo ảnh không bị méo
+                  }}
+                />
+              </Box>
+            ))}
           </Box>
         </Box>
       </Box>

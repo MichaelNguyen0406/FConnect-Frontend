@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
   },
   async function (error) {
     const originalRequest = error.config;
-    // console.log(error.response.status);
+    // console.log(error);
     if (error.response.status === 401) {
       console.log("Logout");
     } else if (error.response.status === 410 && !originalRequest._retry) {

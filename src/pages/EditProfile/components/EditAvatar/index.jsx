@@ -3,7 +3,8 @@ import { Avatar, Box } from "@mui/material";
 import CenterFocusWeakIcon from "@mui/icons-material/CenterFocusWeak";
 import styles from "./style"; // Import styles từ file JS
 
-const EditAvatar = () => {
+// eslint-disable-next-line react/prop-types
+const EditAvatar = ({ setInfo }) => {
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState(
     "https://i.pinimg.com/736x/fb/d3/a7/fbd3a701e65149dbe1813bddecbbce5b.jpg"
@@ -16,6 +17,7 @@ const EditAvatar = () => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    setInfo((prev) => ({ ...prev, avatar: file }));
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setPreview(imageUrl);

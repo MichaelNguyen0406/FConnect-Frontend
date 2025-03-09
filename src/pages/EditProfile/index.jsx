@@ -67,15 +67,26 @@ const EditProfile = () => {
   //   }
   // }, []);
 
-  // const handleSave = () => {
-  //   const formData = new FormData();
-  //   formData.append("avatar", info.avatar);
-  //   info.listPicture.forEach((picture) => {
-  //     formData.append("listPicture", picture);
-  //   });
-  //   const response = updateUser(userInfo._id, info, formData)
-  //   if()
-  // };
+  const handleSave = async () => {
+    const formData = new FormData();
+    formData.append("avatar", info.avatar);
+    console.log(pictures);
+    pictures.forEach((picture) => {
+      if (picture.file) {
+        formData.append("listPicture", picture.file);
+        // console.log(picture.file);
+      }
+    });
+    // Object.keys(info).forEach((key) => {
+    //   formData.append(key, info[key]);
+    // });
+    // console.log(formData);
+
+    const userId = userInfo._id;
+    // console.log(info);
+    const response = await updateUser(userId, formData);
+    console.log(response);
+  };
 
   const onChangeDisplayName = (e) => {
     setInfo({ ...info, displayName: e.target.value });
@@ -129,7 +140,7 @@ const EditProfile = () => {
           <Typography sx={{ fontSize: "16px", fontWeight: "bold", mb: 2 }}>
             AVATAR
           </Typography>
-          <EditAvatar />
+          <EditAvatar setInfo={setInfo} />
           <Divider />
           <Box mt={2}>
             <Typography sx={{ fontSize: "16px", fontWeight: "bold", mb: 2 }}>
