@@ -12,31 +12,33 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Import Service
-import { sendOtp, verifyOtp } from "../../services/authService";
+import { sendOtp } from "../../services/authService";
 
 // Import Helper
 import checkEmail from "../../helper/checkEmail";
+import checkOtp from "../../helper/checkOtp";
 
 // Import Context
 import { useAuth } from "../../context/AuthContext";
 
 function Authentication() {
+  const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(0);
   const [email, setEmail] = useState({ value: "", error: null });
   const [otp, setOtp] = useState({ value: "", error: null });
 
-  // console.log(useAuth());
-  const { setUserLogin } = useAuth();
-
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleCheckEmail = async () => {
+  // SEND OTP
+  const handleSendOtp = async () => {
     if (!checkEmail(email.value)) {
       setEmail((prev) => ({ ...prev, error: "Email của bạn không hợp lệ." }));
       return;
     }
+    setLoading(true);
     const response = await sendOtp(email.value);
-    console.log(response);
+    setLoading(false);
     if (response.statusCode === 200) {
       setStep(1);
     } else {
@@ -47,20 +49,23 @@ function Authentication() {
     }
   };
 
+  // VERIFY OTP
   const handleVerifyOtp = async () => {
-    const response = await verifyOtp(email.value, otp.value);
-    console.log(response);
-    if (response.statusCode === 200) {
-      localStorage.setItem("accessToken", response.data.accessToken);
-      localStorage.setItem("refreshToken", response.data.refreshToken);
-      setUserLogin(true);
-      // setUserInfo(response.data.userInfo);
-      navigate("/chat");
+    if (!checkOtp(otp.value)) {
+      setOtp((prev) => ({ ...prev, error: "OTP không hợp lệ." }));
+      return;
+    }
+    setLoading(true);
+    const success = await login(email.value, otp.value);
+    setLoading(false);
+    if (success) {
+      navigate("/");
     } else {
       setOtp((prev) => ({ ...prev, error: "OTP không chính xác." }));
     }
   };
 
+  // HANDLE CHANGE
   const handleChange = (setter) => (event) => {
     setter({ value: event.target.value, error: null });
   };
@@ -74,7 +79,11 @@ function Authentication() {
             error={otp.error}
             onChange={handleChange(setOtp)}
           />
-          <ButtonCustom onClick={handleVerifyOtp} variant="contained">
+          <ButtonCustom
+            onClick={handleVerifyOtp}
+            variant="contained"
+            loading={loading}
+          >
             Xác nhận
           </ButtonCustom>
           <ButtonCustom onClick={() => setStep(0)}>
@@ -92,7 +101,11 @@ function Authentication() {
           error={email.error}
           onChange={handleChange(setEmail)}
         />
-        <ButtonCustom onClick={handleCheckEmail} variant="contained">
+        <ButtonCustom
+          onClick={handleSendOtp}
+          variant="contained"
+          loading={loading}
+        >
           Xác nhận
         </ButtonCustom>
       </>

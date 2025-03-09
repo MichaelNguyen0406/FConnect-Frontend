@@ -7,7 +7,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import { useState, useEffect } from "react";
 
 // Import API
-import listInterest from "../../apis/listInterest";
+import listOriginInterest from "../../apis/listInterest";
 import listMajor from "../../apis/listMajor";
 import listPicture from "../../apis/listPicture";
 import listGender from "../../apis/listGender";
@@ -15,7 +15,8 @@ import listGender from "../../apis/listGender";
 // Import Components
 import SelectForm from "./components/SelectForm";
 import InputCustom from "../../components/InputCustom";
-// import ListPicture from "./components/ListPicture";
+import ListMyInterest from "../components/ListMyInterest";
+import ListInterest from "./components/ListInterest";
 import EditListPicture from "./components/EditListPicture";
 import EditAvatar from "./components/EditAvatar";
 import Tag from "./components/Tag";
@@ -39,8 +40,8 @@ const listMyInterest = [
 
 const EditProfile = () => {
   const { userInfo } = useAuth();
-  // const [info, setInfo] = useState({ displayName: "", major: "", gender: "" });
   const [info, setInfo] = useState(userInfo);
+  const [updateData, setUpdateData] = useState({});
   const [pictures, setPictures] = useState(listPicture);
 
   const handleUpload = (file, index) => {
@@ -69,36 +70,50 @@ const EditProfile = () => {
 
   const handleSave = async () => {
     const formData = new FormData();
-    formData.append("avatar", info.avatar);
-    console.log(pictures);
-    pictures.forEach((picture) => {
-      if (picture.file) {
-        formData.append("listPicture", picture.file);
-        // console.log(picture.file);
+    // formData.append("avatar", info.avatar);
+    // console.log(pictures);
+    // pictures.forEach((picture) => {
+    //   if (picture.file) {
+    //     formData.append("listPicture", picture.file);
+    //     // console.log(picture.file);
+    //   }
+    // });
+
+    Object.keys(updateData).forEach((key) => {
+      if (key === "listInterest") {
+        formData.append(key, JSON.stringify(updateData[key]));
+      } else if (updateData[key] !== userInfo[key]) {
+        formData.append(key, updateData[key]);
       }
     });
-    // Object.keys(info).forEach((key) => {
-    //   formData.append(key, info[key]);
-    // });
     // console.log(formData);
 
-    const userId = userInfo._id;
-    // console.log(info);
-    const response = await updateUser(userId, formData);
-    console.log(response);
+    // const userId = userInfo._id;
+    // // console.log(info);
+    // const response = await updateUser(userId, formData);
+    // console.log(response);
   };
 
   const onChangeDisplayName = (e) => {
     setInfo({ ...info, displayName: e.target.value });
+    setUpdateData({ ...updateData, displayName: e.target.value });
   };
 
   const onChangeMajor = (e) => {
     setInfo({ ...info, major: e.target.value });
+    setUpdateData({ ...updateData, major: e.target.value });
   };
 
   const onChangeGender = (e) => {
     setInfo({ ...info, gender: e.target.value });
+    setUpdateData({ ...updateData, gender: e.target.value });
   };
+
+  const onChangeInterest = (e) => {
+    setInfo({ ...info, interest: e.target.value });
+    setUpdateData({ ...updateData, interest: e.target.value });
+  };
+
   return (
     <Box>
       <Box
@@ -194,11 +209,11 @@ const EditProfile = () => {
             <Typography sx={{ fontSize: "16px", fontWeight: "bold", mb: 2 }}>
               INTEREST
             </Typography>
-            <Tag listValue={listMyInterest} onRemove />
+            <ListMyInterest listValue={listMyInterest} onRemove />
           </Box>
           <Divider />
           <Box mt={2}>
-            <Tag listValue={listInterest} />
+            <ListInterest listOriginalValue={listOriginInterest} />
           </Box>
         </Box>
       </Box>
