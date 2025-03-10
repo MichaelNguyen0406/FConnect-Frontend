@@ -50,7 +50,7 @@ function Chat() {
   useEffect(() => {
     const fetchListMatch = async () => {
       const response = await getListMatch(userInfo._id);
-      // console.log(response);
+      console.log(response);
       if (response.statusCode === 200) {
         response.data.forEach((match) => {
           const receiverId =
@@ -67,8 +67,12 @@ function Chat() {
       setLoadingListMatch(false);
     };
 
-    fetchListMatch();
+    if (userInfo?._id) {
+      fetchListMatch();
+    }
   }, []);
+
+  console.log(listMatch);
 
   // Fetch List Message
   useEffect(() => {

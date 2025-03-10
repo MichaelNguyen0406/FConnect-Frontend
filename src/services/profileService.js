@@ -16,7 +16,16 @@ export const updateUser = async (userId, formData) => {
         },
       }
     );
-    return response.data;
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const getProfile = async (userId) => {
+  try {
+    const response = await axiosInstance.get(`/profile/get-user/${userId}`);
+    return response;
   } catch (error) {
     return error;
   }

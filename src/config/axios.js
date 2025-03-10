@@ -37,11 +37,12 @@ axiosInstance.interceptors.response.use(
       console.log("Phiên đăng nhập hết hạn");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-      // window.location.href = "/authentication";
+      window.location.href = "/authentication";
       return Promise.reject(error.response.data);
     } else if (status === 410 && !originalRequest._retry) {
       originalRequest._retry = true;
       const refreshTokenValue = localStorage.getItem("refreshToken");
+      console.log(refreshTokenValue);
       try {
         const response = await refreshToken(refreshTokenValue);
         if (response.statusCode === 200) {
@@ -60,6 +61,9 @@ axiosInstance.interceptors.response.use(
       }
     } else if (status === 403) {
       console.error("Bạn không có quyền truy cập tài nguyên này");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      window.location.href = "/authentication";
     } else if (status >= 500) {
       console.error("Lỗi server, vui lòng thử lại sau");
     }

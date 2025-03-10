@@ -27,8 +27,6 @@ export const WebSocketProvider = ({ children }) => {
 
     websocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      // console.log(data);
-      // console.log(data);
       if (data.type === "matched") {
         navigate(`/chat/${data.matchId}`);
       } else {

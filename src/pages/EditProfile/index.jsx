@@ -43,6 +43,9 @@ const EditProfile = () => {
   const [info, setInfo] = useState(userInfo);
   const [updateData, setUpdateData] = useState({});
   const [pictures, setPictures] = useState(listPicture);
+  const [loading, setLoading] = useState(false);
+
+  // console.log(userInfo);
 
   const handleUpload = (file, index) => {
     const newPictures = [...pictures];
@@ -70,14 +73,14 @@ const EditProfile = () => {
 
   const handleSave = async () => {
     const formData = new FormData();
-    // formData.append("avatar", info.avatar);
+    formData.append("avatar", info.avatar);
     // console.log(pictures);
-    // pictures.forEach((picture) => {
-    //   if (picture.file) {
-    //     formData.append("listPicture", picture.file);
-    //     // console.log(picture.file);
-    //   }
-    // });
+    pictures.forEach((picture) => {
+      if (picture.file) {
+        formData.append("listPicture", picture.file);
+        // console.log(picture.file);
+      }
+    });
 
     Object.keys(updateData).forEach((key) => {
       if (key === "listInterest") {
@@ -86,12 +89,11 @@ const EditProfile = () => {
         formData.append(key, updateData[key]);
       }
     });
-    // console.log(formData);
-
-    // const userId = userInfo._id;
-    // // console.log(info);
-    // const response = await updateUser(userId, formData);
-    // console.log(response);
+    const userId = userInfo._id;
+    setLoading(true);
+    const response = await updateUser(userId, formData);
+    setLoading(false);
+    console.log(response);
   };
 
   const onChangeDisplayName = (e) => {
@@ -134,7 +136,7 @@ const EditProfile = () => {
           <ArrowBackIcon />
         </IconButton>
         <IconButton onClick={handleSave} sx={{ mr: "-12px" }}>
-          <DoneIcon />
+          {loading ? <Box>Loading...</Box> : <DoneIcon />}
         </IconButton>
       </Box>
       <Box
@@ -181,7 +183,7 @@ const EditProfile = () => {
               NAME
             </Typography>
             <InputCustom
-              value={info.displayName}
+              value={info?.displayName}
               onChange={onChangeDisplayName}
             />
           </Box>
@@ -191,7 +193,7 @@ const EditProfile = () => {
             </Typography>
             <SelectForm
               onChange={onChangeMajor}
-              value={info.major}
+              value={info?.major}
               listValue={listMajor}
             />
           </Box>
@@ -201,7 +203,7 @@ const EditProfile = () => {
             </Typography>
             <SelectForm
               onChange={onChangeGender}
-              value={info.gender}
+              value={info?.gender}
               listValue={listGender}
             />
           </Box>

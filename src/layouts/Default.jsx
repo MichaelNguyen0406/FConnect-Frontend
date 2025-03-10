@@ -6,9 +6,15 @@ import Box from "@mui/material/Box";
 // eslint-disable-next-line react/prop-types
 function Default({ children }) {
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box
+      sx={{
+        display: "flex",
+        maxWidth: "1440px",
+        height: "100vh",
+        mx: "auto",
+      }}
+    >
       <Sidebar />
-      <Box sx={{ width: "88px" }} />
       <Box flex={1}>
         {/* <Header /> */}
         {children}

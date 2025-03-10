@@ -1,17 +1,22 @@
+// Import React
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-import { verifyOtp } from "../services/authService";
-import { checkUser, setUser, logout } from "../features/auth/authSlice";
+
+// Import Redux
 import { useSelector, useDispatch } from "react-redux";
+
+// Import Service
+import { verifyOtp } from "../services/authService";
+
+// Import Feature
+import { checkUser, setUser, logout } from "../features/auth/authSlice";
+
+// Import Constant
+import PATHS from "../constants/path";
 
 export const AuthContext = createContext(null);
 export const useAuth = () => useContext(AuthContext);
-
-const PATHS = {
-  AUTH: "/authentication",
-  HOME: "/",
-};
 
 function AuthProvider({ children }) {
   const dispatch = useDispatch();
@@ -36,6 +41,8 @@ function AuthProvider({ children }) {
       mounted = false;
     };
   }, [dispatch]);
+
+  // console.log(userInfo);
 
   useEffect(() => {
     if (isInitialCheckDone && !loading) {

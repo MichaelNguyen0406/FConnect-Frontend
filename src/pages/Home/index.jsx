@@ -33,7 +33,7 @@ function Home() {
         width: "100%",
         height: "100vh",
         overflow: "hidden",
-        zIndex: -1,
+        zIndex: 1,
       }}
     >
       <video

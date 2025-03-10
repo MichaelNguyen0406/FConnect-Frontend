@@ -3,7 +3,7 @@ import axiosInstance from "../config/axios";
 export const getListMatch = async (userId) => {
   try {
     const response = await axiosInstance.get(`/match/get-list-match/${userId}`);
-    return response.data;
+    return response;
   } catch (error) {
     return error;
   }
@@ -14,7 +14,7 @@ export const getMessages = async (matchId) => {
     const response = await axiosInstance.get(
       `/message/get-messages/${matchId}`
     );
-    return response.data;
+    return response;
   } catch (error) {
     return error;
   }

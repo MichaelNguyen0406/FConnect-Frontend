@@ -1,215 +1,293 @@
-import { Box, Avatar, Typography } from "@mui/material";
+// Import MUI
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import { NavLink, useParams } from "react-router-dom";
 
+// Import React
+import { useState, useEffect } from "react";
+import { useParams, NavLink } from "react-router-dom";
+
+// Import Context
 import { useAuth } from "../../context/AuthContext";
 
+// Import Styles
+import styles from "./style";
+
+// Import Service
+import { getProfile } from "../../services/profileService";
+import { Icon, IconButton } from "@mui/material";
+
 function Profile() {
-  // const { userId } = useParams();
   const { userInfo } = useAuth();
+  const { userId } = useParams();
+  const [active, setActive] = useState("MAJOR");
+  const [profile, setProfile] = useState(
+    userInfo?._id === userId ? userInfo : null
+  );
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const response = await getProfile(userId);
+      if (response.statusCode === 200) {
+        setProfile(response.data);
+      }
+    };
+    if (!profile) {
+      fetchProfile();
+    }
+  }, []);
+
+  const handleActive = (item) => {
+    setActive(item);
+  };
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        height: "100vh",
-        bgcolor: "#FFF",
-        overflow: "scroll",
-      }}
-    >
-      <Box sx={{ height: "456px", position: "relative" }}>
-        <Box sx={{ height: "310px", bgcolor: "#DEDEDE" }}></Box>
+    <Box sx={styles.container}>
+      <Box
+        sx={{
+          width: "calc(50% - 12px)",
+          borderRadius: "8px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "24px",
+        }}
+      >
         <Box
           sx={{
-            position: "absolute",
-            left: "50%",
-            transform: "translateX(-50%)",
-            bottom: "0",
+            width: "100%",
+            height: "200px",
+            borderRadius: "8px",
+            bgcolor: "#C29EFF",
+            p: "24px",
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
+            gap: "24px",
           }}
         >
           <Avatar
-            src={userInfo?.avatar}
+            src="https://i.pinimg.com/736x/fb/d3/a7/fbd3a701e65149dbe1813bddecbbce5b.jpg"
             sx={{
-              width: "180px",
-              height: "180px",
-              border: "4px solid #f0f0f0",
+              borderRadius: "50%",
+              height: "152px",
+              width: "152px",
+              bgcolor: "#D9D9D9",
+              border: "4px solid #2AB7A4",
             }}
           />
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              position: "relative",
-            }}
-          >
-            <Typography sx={{ fontSize: "30px", fontWeight: "bold" }}>
-              {userInfo?.displayName}
-            </Typography>
-            <NavLink
-              to={`/edit-profile/${userInfo?._id}`}
-              style={{
-                textDecoration: "none",
-                color: "inherit",
-                position: "absolute",
-                right: "-60px",
-              }}
+          <Box>
+            <Typography
+              sx={{ fontWeight: "900", fontSize: "32px", color: "#FFF" }}
             >
-              <Box
-                sx={{
-                  p: "4px 12px",
-                  borderRadius: "50px",
-                  display: "flex",
-                  alignItems: "center",
-                  ":hover": {
-                    bgcolor: "#E0E0E0",
-                    cursor: "pointer",
-                  },
-                }}
-              >
+              {profile?.displayName}
+            </Typography>
+            <NavLink to={`/edit-profile/${profile?._id}`}>
+              <IconButton sx={styles.editButton}>
                 <ModeEditIcon />
-              </Box>
+              </IconButton>
             </NavLink>
           </Box>
         </Box>
-      </Box>
-      <Box sx={{ p: "32px 72px" }}>
-        <Box>
-          <Typography sx={{ fontSize: "16px", fontWeight: "bold", mt: 2 }}>
-            MAJOR
-          </Typography>
+        <Box
+          sx={{
+            flex: 1,
+            bgcolor: "#C29EFF",
+            borderRadius: "8px",
+            p: "24px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "24px",
+          }}
+        >
           <Box
             sx={{
-              my: 2,
-              p: "8px 16px",
-              borderRadius: "8px",
-              display: "inline-block",
-              bgcolor: "#DEDEDE",
-              alignItems: "center",
-              ":hover": {
-                bgcolor: "#E0E0E0",
-                cursor: "pointer",
-              },
+              width: "calc(100% + 48px)",
+              height: "61px",
+              bgcolor: "#FFAEC0",
+              mx: "-24px",
+              display: "flex",
             }}
           >
-            {userInfo?.major}
-          </Box>
-        </Box>
-        {/* <Divider /> */}
-        <Box>
-          <Typography sx={{ fontSize: "16px", fontWeight: "bold", mt: 2 }}>
-            GENDER
-          </Typography>
-          <Box
-            sx={{
-              my: 2,
-              p: "8px 16px",
-              borderRadius: "8px",
-              display: "inline-block",
-              bgcolor: "#DEDEDE",
-              alignItems: "center",
-              ":hover": {
-                bgcolor: "#E0E0E0",
-                cursor: "pointer",
-              },
-            }}
-          >
-            {userInfo?.gender}
-          </Box>
-        </Box>
-        {/* <Divider /> */}
-        <Box>
-          <Typography sx={{ fontSize: "16px", fontWeight: "bold", mt: 2 }}>
-            INTEREST
-          </Typography>
-          <Box
-            sx={{
-              my: 2,
-              p: "8px 16px",
-              borderRadius: "50px",
-              display: "inline-block",
-              bgcolor: "#DEDEDE",
-              mr: 1,
-              alignItems: "center",
-              ":hover": {
-                bgcolor: "#E0E0E0",
-                cursor: "pointer",
-              },
-            }}
-          >
-            Football
-          </Box>
-          <Box
-            sx={{
-              my: 2,
-              p: "8px 16px",
-              mr: 1,
-              borderRadius: "50px",
-              display: "inline-block",
-              bgcolor: "#DEDEDE",
-              alignItems: "center",
-              ":hover": {
-                bgcolor: "#E0E0E0",
-                cursor: "pointer",
-              },
-            }}
-          >
-            Travel
-          </Box>
-          <Box
-            sx={{
-              my: 2,
-              p: "8px 16px",
-              mr: 1,
-              borderRadius: "50px",
-              display: "inline-block",
-              bgcolor: "#DEDEDE",
-              alignItems: "center",
-              ":hover": {
-                bgcolor: "#E0E0E0",
-                cursor: "pointer",
-              },
-            }}
-          >
-            Read Book
-          </Box>
-        </Box>
-        <Box>
-          <Typography sx={{ fontSize: "16px", fontWeight: "bold", mt: 2 }}>
-            Picture
-          </Typography>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 2, // Khoảng cách giữa các ảnh
-            }}
-          >
-            {userInfo?.listPicture?.map((image, index) => (
-              <Box
-                key={index}
+            {["MAJOR", "INTEREST", "GENDER"].map((item) => (
+              <Button
+                key={item}
+                onClick={() => handleActive(item)}
                 sx={{
-                  width: "100%", // Để grid chia đều 3 ảnh trên mỗi hàng
-                  aspectRatio: "3 / 4", // Giữ tỷ lệ ảnh 3:4
-                  overflow: "hidden",
-                  borderRadius: "8px",
+                  bgcolor: item == active ? "#FF98AF" : "#FFAEC0",
+                  flex: 1,
+                  display: "flex",
+                  justifyContent: "space-around",
+                  alignItems: "center",
                 }}
               >
-                <img
-                  src={image}
-                  alt={`image-${index}`}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover", // Đảm bảo ảnh không bị méo
-                  }}
-                />
-              </Box>
+                <Typography
+                  sx={{ fontWeight: "900", fontSize: "24px", color: "#2AB7A4" }}
+                >
+                  {item}
+                </Typography>
+              </Button>
             ))}
           </Box>
+          {active === "INTEREST" && (
+            <Box
+              sx={{
+                width: "100%",
+              }}
+            >
+              {profile?.listInterest}
+            </Box>
+          )}
+          {active === "GENDER" && (
+            <Box
+              sx={{
+                width: "100%",
+              }}
+            >
+              {profile?.gender}
+            </Box>
+          )}
+          {active === "MAJOR" && (
+            <Box
+              sx={{
+                width: "100%",
+              }}
+            >
+              {profile?.major}
+            </Box>
+            // <Box
+            //   sx={{
+            //     flex: 1,
+            //     display: "flex",
+            //     justifyContent: "center",
+            //     alignItems: "center",
+            //   }}
+            // >
+            //   <Box
+            //     sx={{
+            //       width: "60%",
+            //       bgcolor: "#D9D9D9",
+            //       aspectRatio: "3/4",
+            //       borderRadius: "8px",
+            //       overflow: "hidden",
+            //     }}
+            //   >
+            //     <img
+            //       src="https://i.pinimg.com/736x/cc/7f/10/cc7f10c24bd4a62fd84d2b1f1ebe8875.jpg"
+            //       style={{ objectFit: "cover", width: "100%", height: "100%" }}
+            //     />
+            //   </Box>
+            // </Box>
+          )}
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          width: "calc(50% - 12px)",
+          borderRadius: "8px",
+          bgcolor: "#C29EFF",
+          display: "flex",
+          flexDirection: "column",
+          py: "24px",
+        }}
+      >
+        <Box
+          sx={{
+            bgcolor: "#FFAEC0",
+            width: "100%",
+            height: "71px",
+            px: "24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography
+            sx={{ fontWeight: "900", fontSize: "32px", color: "#2AB7A4" }}
+          >
+            PICTURE
+          </Typography>
+          <Typography
+            sx={{
+              fontWeight: "900",
+              fontSize: "32px",
+              color: "#2AB7A4",
+              letterSpacing: "4px",
+            }}
+          >
+            3/9
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            width: "100%",
+            mt: "24px",
+            px: "24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "24px",
+          }}
+        >
+          <Button
+            sx={{
+              color: "#FFF",
+              bgcolor: "#2AB7A4",
+              width: "calc(50% - 12px)",
+              fontSize: "24px",
+              fontWeight: "900",
+              borderRadius: "8px",
+            }}
+          >
+            ALL
+          </Button>
+          <Button
+            sx={{
+              color: "#FFF",
+              bgcolor: "#2AB7A4",
+              width: "calc(50% - 12px)",
+              fontSize: "24px",
+              fontWeight: "900",
+              borderRadius: "8px",
+            }}
+          >
+            ONE
+          </Button>
+        </Box>
+        <Box
+          sx={{
+            flex: 1,
+            width: "100%",
+            mt: "24px",
+            px: "24px",
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "16px",
+            overflowY: "scroll",
+          }}
+        >
+          {profile?.listPicture?.map((item) => (
+            <Box
+              key={item}
+              sx={{
+                border: "4px solid #2AB7A4",
+                borderRadius: "8px",
+                aspectRatio: "3 / 4",
+                bgcolor: "#D9D9D9",
+                gridItem: "span 1",
+                overflow: "hidden",
+              }}
+            >
+              <img
+                src={item}
+                style={{
+                  objectFit: "cover",
+                  width: "100%",
+                  height: "100%",
+                }}
+              />
+            </Box>
+          ))}
         </Box>
       </Box>
     </Box>
@@ -217,5 +295,3 @@ function Profile() {
 }
 
 export default Profile;
-
-/* HTML: <div class="loader"></div> */

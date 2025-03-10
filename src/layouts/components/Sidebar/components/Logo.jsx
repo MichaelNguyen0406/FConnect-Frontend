@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 
-import logo from "../../../../assets/Logo.webp";
+import logo from "../../../../assets/LogoWhite.webp";
 
 function Logo() {
   return (
